@@ -5,6 +5,7 @@
     <title>Grateful Dead Archive</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     
     <!-- Conditionally load WC polyfills -->
     <script>
@@ -18,28 +19,35 @@
         }
     </script>
     
+    <!-- Webapp Settings -->
+	<meta name="application-name" content="Grateful Dead" /> 
+	<meta name="msapplication-TileColor" content="#3377bb" />
+
+    <meta name="msapplication-TileImage" content="gd-logo.svg" />
+	<link rel="apple-touch-icon" href="gd-logo.svg" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+    
     <!-- Import Web Components -->
     <link href="http://fonts.googleapis.com/css?family=Raleway:600,400" rel="stylesheet" type="text/css">
-    <link rel="import" href="gd-list.html">
+    <link rel="import" href="gd-app.html">
     
     <!-- WebApp CSS Styles -->
     <style>
         body {
-            background: url('gdead-50background.jpg') center top;
-            
+            background: url('images/background-dead50.png') center top;
             font-family: 'RobotoDraft', sans-serif;
             
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            
             /*-webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             -o-user-select: none;
             user-select: none;*/
-        }
+        }        
     </style>
 </head>
 
 <body unresolved fullbleed>
-    <gd-list id="gdList"></gd-list>
+    <gd-app id="app"></gd-app>
 </body>

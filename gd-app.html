@@ -1,0 +1,28 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<link rel="import" href="gd-list.html">
+<link rel="import" href="play-area.html">
+
+<polymer-element name="gd-app" attributes="showPlayArea">
+    <template>
+        <style>
+            gd-list /deep/ core-list {
+                height: {{(showPlayArea) ? "calc(100% - 80px)" : "100%"}};
+            }
+        </style>
+        
+        <gd-list></gd-list>
+        <play-area id="playArea" hidden?={{!showPlayArea}}></play-area>
+    </template>
+    
+    <script>
+        Polymer("gd-app", {
+            showPlayArea: true,
+            
+            //Functions
+            ready: function () {
+                this.$.playArea.play();
+            }
+        });
+    </script>
+</polymer-element>
