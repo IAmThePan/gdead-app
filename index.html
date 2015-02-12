@@ -7,16 +7,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=no">
     
     <!-- Conditionally load WC polyfills -->
-    <script>
-        if ('registerElement' in document
-            && 'createShadowRoot' in HTMLElement.prototype
-            && 'import' in document.createElement('link')
-            && 'content' in document.createElement('template')) {
-            // We're using a browser with native WC support!
-        } else {
-            document.write('<script src="/bower_components/webcomponentsjs/webcomponents.js"><\/script>');
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.5.2/webcomponents.js"></script>
     
     <!-- Import Web Components -->
     <link href="http://fonts.googleapis.com/css?family=Raleway:600,400" rel="stylesheet" type="text/css">
