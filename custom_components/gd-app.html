@@ -1,7 +1,7 @@
-<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
 
 <link rel="import" href="gd-list.html">
-<link rel="import" href="play-area.html">
+<link rel="import" href="gd-player.html">
 
 <polymer-element name="gd-app" attributes="showPlayArea">
     <template>
@@ -12,7 +12,7 @@
         </style>
         
         <gd-list></gd-list>
-        <play-area id="playArea" hidden?={{!showPlayArea}}></play-area>
+        <gd-player id="player" hidden?={{!showPlayArea}}></gd-player>
     </template>
     
     <script>
@@ -21,7 +21,7 @@
             
             //Functions
             ready: function () {
-                this.$.playArea.play();
+                this.$.player.play();
             }
         });
     </script>

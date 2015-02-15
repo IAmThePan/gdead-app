@@ -1,6 +1,6 @@
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/core-icons/core-icons.html">
-<link rel="import" href="bower_components/core-icons/av-icons.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../bower_components/core-icons/av-icons.html">
 
 <polymer-element name="player-controls" attributes="playing">
     <template>
@@ -50,16 +50,16 @@
             
             //Functions
             clickPlay: function () {
-                console.log("player-controls: Play");
+                this.fire("play");
             },
             clickPause: function () {
-                console.log("player-controls: Pause");
+                this.fire("pause");
             },
             clickPrevious: function () {
-                console.log("player-controls: Previous");
+                this.fire("previous");
             },
             clickNext: function () {
-                console.log("player-controls: Next");
+                this.fire("next");
             }
         });
     </script>

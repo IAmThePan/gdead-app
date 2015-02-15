@@ -1,6 +1,6 @@
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/core-image/core-image.html">
-<link rel="import" href="bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-image/core-image.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 
 
 <link rel="import" href="player-controls.html">
@@ -92,6 +92,7 @@
         
         <div id="player">
             <core-image id="albumArt" sizing="cover" preload fade 
+                        on-click="{{albumArtClick}}"
                         placeholder="images/gd-logo.svg"
                         src="{{albumArt}}">
             </core-image>
@@ -100,18 +101,23 @@
                     <div id="songTitle">{{songTitle}}</div>
                     <div id="songAlt">{{songAlt}}</div>
                 </div>
-                <progress-slider id="progressSlider" max="{{songLength}}" value="{{songProgress}}"></progress-slider>
+                <progress-slider id="progressSlider" max="{{songLength}}" value="{{songProgress}}"
+                                 on-seek="{{seek}}">
+                </progress-slider>
             </div>
             
             
-            <player-controls id="playerControls" playing="false"></player-controls>
+            <player-controls id="playerControls" playing="false"
+                             on-play="{{controlsPlay}}" on-pause="{{controlsPause}}"
+                             on-previous="{{controlsPrevious}}" on-next="{{controlsNext}}">
+            </player-controls>
         </div>
         <paper-progress id="progressStatic" 
                         value="{{songProgress / (songLength + 0.0001) * 100}}">
         </paper-progress>
         
-        <audio id="audio">
-               <source id="source" type="audio/mpeg">
+        <audio id="audio" on-timeupdate="{{timeUpdate}}" on-ended="{{trackEnded}}"
+               src="https://ia601407.us.archive.org/13/items/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t11.mp3">
         </audio>
     </template>
     
@@ -121,10 +127,49 @@
             songAlt: "Album Title or Location",
             albumArt: "images/gd-logo.svg",
             
-            songLength: 0,
-            songProgress: 0,
+            songLength: 194,
+            songProgress: 147,
             
             //Functions
+            play: function () {
+                this.$.audio.play();
+                this.$.playerControls.playing = true;
+                this.songProgress = 0;
+            },
+            timeUpdate: function () {
+                this.songLength = Math.floor(this.$.audio.seekable.end(0));
+                this.songProgress = Math.floor(this.$.audio.currentTime);
+                //console.log("gd-player: timeUpdate");
+            },
+            trackEnded: function () {
+                this.$.playerControls.playing = false;
+                console.log("gd-player: trackEnded");
+            },
+            seek: function (event) {
+                this.$.audio.currentTime = event.detail;
+                console.log("gd-player: seek", event.detail);
+            },
+            albumArtClick: function () {
+                console.log("gd-player: albumArtClick");
+            },
+            controlsPlay: function () {
+                this.$.audio.play();
+                this.$.playerControls.playing = true;
+                console.log("gd-player: controlsPlay");
+            },
+            controlsPause: function () {
+                this.$.audio.pause();
+                this.$.playerControls.playing = false;
+                console.log("gd-player: controlsPause");
+            },
+            controlsPrevious: function () {
+                console.log("gd-player: controlsPrevious");
+            },
+            controlsNext: function () {
+                console.log("gd-player: controlsNext");
+            },
+            
+            
         });
     </script>
 </polymer-element>

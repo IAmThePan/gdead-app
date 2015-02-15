@@ -1,5 +1,5 @@
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 
 <polymer-element name="progress-slider" attributes="min max value">
     <template>
@@ -9,7 +9,8 @@
         <div id="scroller" flex layout horizontal end>
             <div>{{timeString(value)}}</div>
             <paper-slider pin="true" flex
-                          min="{{min}}" max="{{max}}" value="{{value}}">
+                          min="{{min}}" max="{{max}}" value="{{value}}"
+                          on-change="{{sliderSeek}}">
             </paper-slider>
             <div>{{timeString(max)}}</div>
         </div>
@@ -23,6 +24,9 @@
             value: 147,
             
             //Functions
+            sliderSeek: function () {
+                this.fire("seek", this.value);
+            },
             timeString: function (numSeconds) {
                 var hours   = Math.floor(numSeconds / 3600);
                 var minutes = Math.floor((numSeconds - (hours * 3600)) / 60);
