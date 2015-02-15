@@ -2,10 +2,17 @@
 <link rel="import" href="../bower_components/core-image/core-image.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 
-
 <link rel="import" href="player-controls.html">
 <link rel="import" href="progress-slider.html">
 
+<!--
+ToDo:
+    Add scrolling time somewhere
+    Implement Previous and Next buttons
+    Create a Playlist element to keep track of played/upcomming songs 
+        - Data only for next/previous buttons
+        - Then also UI to navigate songs
+-->
 <polymer-element name="gd-player" attributes="albumArt songTitle songAlt">
     <template>
         <style>
@@ -52,9 +59,6 @@
                 background-color: teal;
             }
             #progressSlider /deep/ paper-slider::shadow #sliderKnobInner {
-                background-color: teal;
-            }
-            #progressSlider /deep/ paper-slider::shadow #sliderKnobInner::before {
                 background-color: teal;
             }
             #progressSlider /deep/ paper-slider::shadow #sliderKnob > #sliderKnobInner::after {
@@ -117,7 +121,7 @@
         </paper-progress>
         
         <audio id="audio" on-timeupdate="{{timeUpdate}}" on-ended="{{trackEnded}}"
-               src="https://ia601407.us.archive.org/13/items/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t11.mp3">
+               src="https://archive.org/download/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t02.mp3">
         </audio>
     </template>
     
@@ -135,11 +139,17 @@
                 this.$.audio.play();
                 this.$.playerControls.playing = true;
                 this.songProgress = 0;
+                console.log("gd-player: play");
             },
             timeUpdate: function () {
-                this.songLength = Math.floor(this.$.audio.seekable.end(0));
-                this.songProgress = Math.floor(this.$.audio.currentTime);
-                //console.log("gd-player: timeUpdate");
+                if (!this.$.progressSlider.$.slider.dragging) { 
+                    this.songLength = Math.floor(this.$.audio.seekable.end(0));
+                    this.songProgress = Math.floor(this.$.audio.currentTime);
+                    //console.log("gd-player: timeUpdate");
+                }
+                else {
+                    console.log("gd-player: seeking", this.$.progressSlider.$.slider.immediateValue);
+                }
             },
             trackEnded: function () {
                 this.$.playerControls.playing = false;

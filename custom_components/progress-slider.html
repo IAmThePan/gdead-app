@@ -8,7 +8,7 @@
         
         <div id="scroller" flex layout horizontal end>
             <div>{{timeString(value)}}</div>
-            <paper-slider pin="true" flex
+            <paper-slider id="slider" flex 
                           min="{{min}}" max="{{max}}" value="{{value}}"
                           on-change="{{sliderSeek}}">
             </paper-slider>
