@@ -1,0 +1,15 @@
+{
+  "name": "gdead-app",
+  "version": "0.0.0",
+  "description": "Adding LivePhish styling to the Grateful Dead Live Music Archive",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Caleb Richelson",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-vulcanize": "^0.6.1"
+  }
+}
