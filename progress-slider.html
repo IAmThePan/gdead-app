@@ -1,0 +1,45 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-slider/paper-slider.html">
+
+<polymer-element name="progress-slider" attributes="min max value">
+    <template>
+        <style>
+        </style>
+        
+        <div id="scroller" flex layout horizontal end>
+            <div>{{timeString(value)}}</div>
+            <paper-slider pin="true" flex
+                          min="{{min}}" max="{{max}}" value="{{value}}">
+            </paper-slider>
+            <div>{{timeString(max)}}</div>
+        </div>
+        
+    </template>
+    
+    <script>
+        Polymer("progress-slider", {
+            min: 0,
+            max: 194,
+            value: 147,
+            
+            //Functions
+            timeString: function (numSeconds) {
+                var hours   = Math.floor(numSeconds / 3600);
+                var minutes = Math.floor((numSeconds - (hours * 3600)) / 60);
+                var seconds = numSeconds - (hours * 3600) - (minutes * 60);
+
+                var time;
+                if (hours > 0) {
+                    if (minutes < 10) minutes = "0" + minutes;
+                    if (seconds < 10) seconds = "0" + seconds;
+                    time        = hours + ':' + minutes + ':' + seconds;
+                }
+                else {
+                    if (seconds < 10) seconds = "0" + seconds;
+                    time        = minutes + ':' + seconds;
+                }
+                return time;
+            }
+        });
+    </script>
+</polymer-element>

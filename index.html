@@ -7,17 +7,8 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     
-    <!-- Conditionally load WC polyfills -->
-    <script>
-        if ('registerElement' in document
-            && 'createShadowRoot' in HTMLElement.prototype
-            && 'import' in document.createElement('link')
-            && 'content' in document.createElement('template')) {
-            // We're using a browser with native WC support!
-        } else {
-            document.write('<script src="/bower_components/webcomponentsjs/webcomponents.js"><\/script>');
-        }
-    </script>
+    <!-- Always load WC polyfills -->
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     
     <!-- Webapp Settings -->
 	<meta name="application-name" content="Grateful Dead" /> 

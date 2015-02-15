@@ -1,32 +1,44 @@
 <!DOCTYPE html>
+
 <head>
+    <meta charset="utf-8">
+    <title>Grateful Dead Archive</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    
+    <!-- Always load WC polyfills -->
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    
+    <!-- Webapp Settings -->
+	<meta name="application-name" content="Grateful Dead" /> 
+	<meta name="msapplication-TileColor" content="#3377bb" />
+
+    <meta name="msapplication-TileImage" content="gd-logo.svg" />
+	<link rel="apple-touch-icon" href="gd-logo.svg" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <!-- Import Web Components -->
+    <link href="http://fonts.googleapis.com/css?family=Raleway:600,400" rel="stylesheet" type="text/css">
+    <link rel="import" href="gd-player.html">
+    
+    <!-- WebApp CSS Styles -->
     <style>
-        #one {
-            height: 200px;
-            width: 1000px;
-        }
-        
-        #two {
-            height: 200px;
-            width: 1000px;
-            background-image: url("https://ia902606.us.archive.org/13/items/gd1985-09-11.MixedSource.Darby.118336.Flac2448/gd1985-09-11.MixedSource.t06.png");
-        }
-        
-        #three {
-            height: 200px;
-            width: 60px;
-            background-color: white;
-            filter: invert(1);
-            -webkit-filter: invert(1);
-            background-size: contain;
-            background-image: url("https://ia902606.us.archive.org/13/items/gd1985-09-11.MixedSource.Darby.118336.Flac2448/gd1985-09-11.MixedSource.t06.png");
-        }
+        body {
+            background: url('images/background-dead50.png') center top;
+            font-family: 'RobotoDraft', sans-serif;
+            
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            /*-webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;*/
+        }        
     </style>
 </head>
 
-<body>
-    <div id="one">
-        <div id="two"></div>
-        <div id="three"></div>
-    </div>
+<body unresolved fullbleed>
+    <gd-player id="app"></gd-player>
 </body>

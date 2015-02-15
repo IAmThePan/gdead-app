@@ -1,0 +1,66 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-icons/core-icons.html">
+<link rel="import" href="bower_components/core-icons/av-icons.html">
+
+<polymer-element name="player-controls" attributes="playing">
+    <template>
+        <style>
+            #controls {
+                height: 100%;
+                padding: 0 10px;
+            }
+            #play, #pause {
+                height: 50px;
+                width: 50px;
+            }
+            #previous, #next {
+                display: none;
+                height: 35px;
+                width: 35px;
+            }
+            @media (min-width: 600px) {
+                #previous, #next {
+                    display: block;
+                }
+            }
+        </style>
+        
+        <div id="controls" layout horizontal felx center>
+            <core-icon id="previous" icon="av:skip-previous"
+                       on-click="{{clickPrevious}}">
+            </core-icon>
+            <core-icon id="play" icon="av:play-circle-outline"
+                       hidden?="{{playing}}" 
+                       on-click="{{clickPlay}}">
+            </core-icon>
+            <core-icon id="pause" icon="av:pause-circle-outline"
+                       hidden?="{{!playing}}"
+                       on-click="{{clickPause}}">
+            </core-icon>
+            <core-icon id="next" icon="av:skip-next"
+                       on-click="{{clickNext}}">
+            </core-icon>
+        </div>
+            
+    </template>
+    
+    <script>
+        Polymer("player-controls", {
+            playing: false,
+            
+            //Functions
+            clickPlay: function () {
+                console.log("player-controls: Play");
+            },
+            clickPause: function () {
+                console.log("player-controls: Pause");
+            },
+            clickPrevious: function () {
+                console.log("player-controls: Previous");
+            },
+            clickNext: function () {
+                console.log("player-controls: Next");
+            }
+        });
+    </script>
+</polymer-element>
