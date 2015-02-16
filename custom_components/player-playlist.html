@@ -1,0 +1,61 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<polymer-element name="player-playlist" attributes="current queue history">
+    <template>
+        <style>
+        </style>
+        
+        
+    </template>
+    
+    <script>
+        Polymer("player-playlist", {
+            queue: [],
+            history: [],
+            
+            //Funcitons
+            load: function (playlist) {
+                this.queue = playlist;
+                this.history = [];
+                this.current = this.getCurrent();
+                console.log("player-playlist: loaded " + playlist.length + " songs");
+            },
+            next: function (num) {
+                num = num || 1;
+                if (this.queue.length <= num) {
+                    this.back(this.history.length);
+                    num = 1 - this.queue.length;
+                    this.fire("reached-end");
+                }
+                
+                var n, temp;
+                for (n = 0; n < num; n++) {
+                    temp = this.queue.shift();
+                    if (temp) this.history.unshift(temp);
+                }
+                this.current = this.getCurrent();
+                console.log("player-playlist: forward " + num + " songs");
+            },
+            back: function (num) {
+                num = num || 1;
+                if (this.history.length < num) {
+                    num = this.history.length;
+                    this.fire("reached-start");
+                }
+                
+                var n, temp;
+                for (n = 0; n < num; n++) {
+                    temp = this.history.shift();
+                    if (temp) this.queue.unshift(temp);
+                }
+                this.current = this.getCurrent();
+                console.log("player-playlist: back " + num + " songs");
+            },
+            
+            getCurrent: function () {
+                if (this.queue.length > 0)  return this.queue[0];
+                else return null;
+            },
+        });
+    </script>
+</polymer-element>

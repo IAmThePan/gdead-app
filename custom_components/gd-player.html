@@ -4,14 +4,14 @@
 
 <link rel="import" href="player-controls.html">
 <link rel="import" href="progress-slider.html">
+<link rel="import" href="player-playlist.html">
 
 <!--
 ToDo:
     Add scrolling time somewhere
-    Implement Previous and Next buttons
     Create a Playlist element to keep track of played/upcomming songs 
-        - Data only for next/previous buttons
-        - Then also UI to navigate songs
+        [x] Data only for next/previous buttons
+        [ ] Then also UI to navigate songs
 -->
 <polymer-element name="gd-player" attributes="albumArt songTitle songAlt">
     <template>
@@ -102,83 +102,143 @@ ToDo:
             </core-image>
             <div id="middle" flex layout vertical justified>
                 <div id="text">
-                    <div id="songTitle">{{songTitle}}</div>
-                    <div id="songAlt">{{songAlt}}</div>
+                    <div id="songTitle">{{current.songTitle}}</div>
+                    <div id="songAlt">{{current.songAlt}}</div>
                 </div>
                 <progress-slider id="progressSlider" max="{{songLength}}" value="{{songProgress}}"
-                                 on-seek="{{seek}}">
+                                 on-seek="{{controlSeek}}">
                 </progress-slider>
             </div>
             
             
             <player-controls id="playerControls" playing="false"
-                             on-play="{{controlsPlay}}" on-pause="{{controlsPause}}"
-                             on-previous="{{controlsPrevious}}" on-next="{{controlsNext}}">
+                             on-play="{{controlPlay}}" on-pause="{{controlPause}}"
+                             on-previous="{{controlBack}}" on-next="{{controlNext}}">
             </player-controls>
         </div>
         <paper-progress id="progressStatic" 
                         value="{{songProgress / (songLength + 0.0001) * 100}}">
         </paper-progress>
         
-        <audio id="audio" on-timeupdate="{{timeUpdate}}" on-ended="{{trackEnded}}"
-               src="https://archive.org/download/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t02.mp3">
+        <player-playlist id="playlist" current="{{current}}"
+                         on-reached-start="{{playlistStart}}" on-reached-end="{{playlistEnd}}">
+        </player-playlist>
+        <audio id="audio" src="{{current.audioSrc}}" on-timeupdate="{{audioTimeUpdate}}"
+               on-playing="{{audioPlaying}}" on-pause="{{audioPaused}}"
+               on-canplay="{{audioCanPlay}}" on-ended="{{audioEnded}}">
         </audio>
     </template>
     
     <script>
         Polymer("gd-player", {
-            songTitle: "Song Title",
-            songAlt: "Album Title or Location",
-            albumArt: "images/gd-logo.svg",
+            current: {
+                songTitle: "Song Title",
+                songAlt: "Album or Location",
+                albumArt: "images/gd-logo.svg",
+                audioSrc: ""
+            },
             
-            songLength: 194,
-            songProgress: 147,
+            playOnArrival: false,
+            songLength: 0,
+            songProgress: 0,
             
             //Functions
-            play: function () {
-                this.$.audio.play();
+            ready: function () {
+                this.$.playlist.load([
+                    {songTitle: "Crowd", songAlt: "Live at the Red Rocks", albumArt: "images/gd-logo.svg", audioSrc: "https://archive.org/download/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t01.mp3"},
+                    {songTitle: "Scarlet Begonias", songAlt: "Live at the Red Rocks", albumArt: "images/gd-logo.svg", audioSrc: "https://archive.org/download/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t02.mp3"},
+                    {songTitle: "Fire on the Mountain", songAlt: "Live at the Red Rocks", albumArt: "images/gd-logo.svg", audioSrc: "https://archive.org/download/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t03.mp3"},
+                    {songTitle: "Dunno", songAlt: "Live at the Red Rocks", albumArt: "images/gd-logo.svg", audioSrc: "https://archive.org/download/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t04.mp3"},
+                    {songTitle: "If I Had My Way", songAlt: "Live at the Red Rocks", albumArt: "images/gd-logo.svg", audioSrc: "https://archive.org/download/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s2t05.mp3"},
+                    {songTitle: "Feels Like Rain", songAlt: "Live at the Red Rocks", albumArt: "images/gd-logo.svg", audioSrc: "https://archive.org/download/gd1984-06-21.beyerm201.holbrook.burke.91024.sbeok.flac16/gd1984-06-21s1t01.mp3"}
+                ]);
                 this.$.playerControls.playing = true;
-                this.songProgress = 0;
-                console.log("gd-player: play");
-            },
-            timeUpdate: function () {
-                if (!this.$.progressSlider.$.slider.dragging) { 
-                    this.songLength = Math.floor(this.$.audio.seekable.end(0));
-                    this.songProgress = Math.floor(this.$.audio.currentTime);
-                    //console.log("gd-player: timeUpdate");
-                }
-                else {
-                    console.log("gd-player: seeking", this.$.progressSlider.$.slider.immediateValue);
-                }
-            },
-            trackEnded: function () {
-                this.$.playerControls.playing = false;
-                console.log("gd-player: trackEnded");
-            },
-            seek: function (event) {
-                this.$.audio.currentTime = event.detail;
-                console.log("gd-player: seek", event.detail);
-            },
-            albumArtClick: function () {
-                console.log("gd-player: albumArtClick");
-            },
-            controlsPlay: function () {
-                this.$.audio.play();
-                this.$.playerControls.playing = true;
-                console.log("gd-player: controlsPlay");
-            },
-            controlsPause: function () {
-                this.$.audio.pause();
-                this.$.playerControls.playing = false;
-                console.log("gd-player: controlsPause");
-            },
-            controlsPrevious: function () {
-                console.log("gd-player: controlsPrevious");
-            },
-            controlsNext: function () {
-                console.log("gd-player: controlsNext");
             },
             
+            controlPlay: function () {
+                if (this.current) this.$.audio.play();
+                console.log("gd-player: Control Play");
+            },
+            controlPause: function () {
+                this.$.audio.pause();
+                console.log("gd-player: Control Pause");
+            },
+            controlBack: function () {
+                this.helperBack();
+                console.log("gd-player: Control Back");
+            },
+            controlNext: function () {
+                this.helperNext();
+                console.log("gd-player: Control Next");
+            },
+            controlSeek: function (event) {
+                this.$.audio.currentTime = event.detail;
+                console.log("gd-player: Seek to ", event.detail);
+            },
+            
+            audioTimeUpdate: function () {
+                if (!this.$.progressSlider.$.slider.dragging) { 
+                    this.songProgress = Math.floor(this.$.audio.currentTime);
+                    //console.log("gd-player: Time Updating");
+                }
+                else {
+                    console.log("gd-player: Seeking ", this.$.progressSlider.$.slider.immediateValue);
+                }
+            },
+            audioPlaying: function () {
+                this.$.playerControls.playing = true;
+                console.log("gd-player: Audio Playing");
+            },
+            audioPaused: function () {
+                this.$.playerControls.playing = false;
+                console.log("gd-player: Audio Paused");
+            },
+            audioCanPlay: function () {
+                this.songProgress = 0;
+                this.songLength = Math.floor(this.$.audio.seekable.end(0));
+                
+                if (this.$.playerControls.playing || this.playOnArrival) {
+                    this.$.audio.play();
+                    this.playOnArrival = false;
+                }
+                
+                console.log("gd-player: Loaded " + this.current.songTitle);
+            },
+            audioEnded: function () {
+                this.playOnArrival = true;
+                this.helperNext();
+                console.log("gd-player: Track Ended");
+            },
+            
+            playlistStart: function () {
+                console.log("gd-player: Reached Playlist Start");
+            },
+            playlistEnd: function () {
+                this.$.playerControls.playing = false;
+                this.playOnArrival = false;
+                console.log("gd-player: Reached Playlist End");
+            },
+            
+            albumArtClick: function () {
+                console.log("gd-player: Clicked Album Art");
+            },
+            
+            helperNext: function (num) {
+                num = num || 1;
+                this.$.playlist.next(num);
+                if (!this.current) this.$.playerControls.playing = false;
+                console.log("gd-player: Help Next");
+            },
+            helperBack: function (num, forceBack) {
+                num = num || 1;
+                forceBack = forceBack || false;
+                
+                if (forceBack || this.$.audio.currentTime < 2) this.$.playlist.back(num);
+                else this.$.audio.currentTime = 0;
+                
+                if (!this.current) this.$.playerControls.playing = false;
+                console.log("gd-player: Help Back");
+            },
             
         });
     </script>
