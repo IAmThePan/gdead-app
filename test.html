@@ -41,4 +41,24 @@
 
 <body unresolved fullbleed>
     <gd-player id="app"></gd-player>
+    
+    <script>
+        function foo1 (data) {
+            console.log("Processing", data);
+        }
+        
+        function foo (data) {
+            console.log("Got It", data.responseData.results[0].url);
+        }
+        var title = "gd1989-10-15.Senn441sNak300.AlabamaBob.Currier.Keo.120533.Flac2496";
+        
+        var script = document.createElement('script');
+        console.log("Sending It", title);
+        //script.src = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=' + title + '?&callback=foo1';
+        //script.src = 'https://archive.org/advancedsearch.php?q=collection%3A(GratefulDead%20AND%20etree%20)%20AND%20-collection%3Astream_only&fl%5B%5D=identifier%2Cdate%2Cdescription%2Ctitle&sort%5B%5D=date%20asc&rows=10&page=0&output=json&callback=foo1';
+        script.src = "https://archive.org/details/" + title + "?&output=json&callback=foo1"; 
+
+        document.getElementsByTagName('head')[0].appendChild(script);
+    
+    </script>
 </body>

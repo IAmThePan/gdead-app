@@ -1,0 +1,35 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<polymer-element name="ajax-jsonp" attributes="">
+    <template>
+        <style>
+        </style>
+        
+    </template>
+    
+    <script>
+        Polymer("ajax-jsonp", {
+            jsonpCallbacks: {counter: 0},
+
+            //Functions
+            go: function (url, fn) {
+                //Create the unique callback function
+                var name = "fn" + jsonpCallbacks.counter++;
+
+                //Save the callback functions
+                jsonpCallbacks[name] = function () {
+                    //Upon Success, remove the callback
+                    delete jsonpCallbacks[name];
+                    
+                    //Now call the desired callback internally and pass parameters
+                    var args = Array.prototype.slice.call(arguments);
+                    args.unshift(id);
+                    fn.apply(this, args);
+                }
+                
+                this.doJSONP(url, "jsonpCallbacks." + name);
+            },
+            doJSONP: function () {},
+        });
+    </script>
+</polymer-element>
