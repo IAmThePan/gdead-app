@@ -1,8 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/core-image/core-image.html">
+<link rel="import" href="../custom_components/ajax-jsonp.html">
 
-<polymer-element name="gd-show" attributes="identifier albumart">
+<polymer-element name="gd-show" attributes="identifier concert">
     <template>
         <style>
             #show {
@@ -62,6 +62,12 @@
             
         </style>
         
+        <ajax-jsonp id="jsonp"
+                    url='https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q={{concert}}?'
+                    response="{{responseData}}"
+                    on-jsonp-complete="{{jsonpComplete}}">
+        </ajax-jsonp>
+        
         <div id="show">
             <core-image sizing="cover" preload fade 
                         placeholder="images/gd-logo.svg"
@@ -88,13 +94,27 @@
     <script>
         Polymer("gd-show", {
             identifier: "",
-            albumart: "http://lorempixel.com/400/400/",
+            concert: "",
+            albumart: "",
             
             //Functions
+            jsonpComplete: function (event, data, element) {
+                this.albumart = this.responseData.responseData.results[0].url;
+            },
             showClick: function (event, data, element) {
                 var clickElement = (element.id === "play-button") ? "controls" : "details";
                 this.fire("show-click", clickElement);
-            }
+            },
+            
+            ready: function () {
+                if (this.concert) this.jsonpGo();
+            },
+            concertChanged: function () {
+                if (this.concert) this.jsonpGo();
+            },
+            jsonpGo: function () {
+                this.$.jsonp.go();
+            },
         });
     </script>
 </polymer-element>

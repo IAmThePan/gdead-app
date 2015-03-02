@@ -1,7 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<script src="md5.js"></script>
 
-<polymer-element name="ajax-jsonp" attributes="url identifier fn params auto">
+<polymer-element name="ajax-jsonp" attributes="url identifier response auto">
     <template>
         <style>
         </style>
@@ -13,31 +12,29 @@
             //Attribute Defaults
             url: "",
             identifier: "",
-            fn: function () {
-                console.log("Ajax JSONP default");
-            },
-            params: {},
+            response: {},
             auto: false,
             
             //Functions
             ready: function () {
                 window.callbackJsonP = window.callbackJsonP || {};
+                window.callbackJsonP.counter = window.callbackJsonP.counter || 0;
                 if (this.auto) this.go();
             },
             go: function () {
-                var key     = "key" + md5(this.identifier + Math.random()).toString(),
-                    script  = document.createElement("script"),
-                    params  = this.params;
-                    fn      = this.fn;
+                window.callbackJsonP.counter++;
+                
+                var key         = "key" + Date.now().toString() + Math.round(Math.random() * 1000000000000000000).toString() + window.callbackJsonP.counter.toString(),
+                    script      = document.createElement("script"),
+                    element     = this;
                 
                 window.callbackJsonP[key] = function () {
-                    var n, fnName;
-                    for (n in this) fnName = n;
-                    
-                    fn(params);
-                    
-                    delete window.callbackJsonP[fnName];
-                    document.getElementById(fnName).remove();
+                    element.response = this[key].arguments[0];
+                    element.fire("jsonp-complete", key);
+                    //console.log("ajax-jsonp: Callback Successful", key);
+
+                    delete window.callbackJsonP[key];
+                    document.getElementById(key).remove();
                 }
                 
                 script.id = key;

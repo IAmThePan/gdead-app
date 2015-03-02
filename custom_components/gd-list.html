@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/core-list/core-list.html">
+<link rel="import" href="../custom_components/ajax-jsonp.html">
 
 <link rel="import" href="gd-show.html">
 
@@ -15,16 +15,15 @@
             }
         </style>
         
-        <core-ajax id="ajax"
-                   url="https://archive.org/advancedsearch.php"
-                   params="{{params}}"
-                   handleAs="json"
-                   response="{{shows}}">
-        </core-ajax>
+        <ajax-jsonp id="jsonp" auto="true"
+                    url='https://archive.org/advancedsearch.php?{{getParamsString()}}'
+                    response="{{responseData}}">
+        </ajax-jsonp>
         
-        <core-list id="list" data="{{shows.response.docs}}">
+        <core-list id="list" data="{{responseData.response.docs}}">
             <template>
-                <gd-show identifier="{{model.identifier}}" albumart="{{getAlbumArt(model.title)}}" 
+                <gd-show identifier="{{model.identifier}}" 
+                         concert="{{model.title}}"
                          on-show-click="{{showClickResponse}}">
                     <div class="band">{{extractBand(model.title)}}</div>
                     <div class="date">{{extractDate(model.date)}}</div>
@@ -35,37 +34,30 @@
     </template>
     
     <script>
-        function callbackList (data) {
-            console.log("List jsonP", data);
-            document.querySelector("#app").$.list.shows = data;
-        }
-        
-        function callbackArt (data) {
-            console.log("Art jsonP", data.responseData.results[0].url);
-        
-        }
-        
         Polymer("gd-list", {
-            params: {
-                "q": "collection:(GratefulDead AND etree ) AND -collection:stream_only",
-                "fl[]": "identifier,date,description,title",
-                "sort[]": "date asc",
-                "rows": "10",
-                "page": "0",
-                "output": "json",
-            },
-            shows: {},
+            responseData: {},
 
             //Functions
-            showClickResponse: function (event, data, element) {
-                //alert(element.identifier); //works!
-            },
-            getAlbumArt: function (title) {
-                var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=' + title + '?&callback=callbackArt'
+            getParamsString: function () {
+                var n, paramsString = "",
+                    params = {
+                        "q"         : "collection:(GratefulDead AND etree) AND -collection:stream_only",
+                        "fl[]"      : "identifier,date,description,title",
+                        "sort[]"    : "date asc",
+                        "rows"      : "15",
+                        "page"      : "266",
+                        "output"    : "json"
+                    };
                 
-                var script = document.createElement('script');
-                script.src = url;
-                document.getElementsByTagName('head')[0].appendChild(script);
+                for (n in params) {
+                    paramsString += n.toString() + "=" + params[n].toString() + "&";
+                }
+                
+                paramsString = paramsString.replace(/ /g,"%20").replace(/:/g,"%3A").replace(/,/g,"%2C").replace(/\[/g, "%5B").replace(/\]/g,"%5D");
+                return paramsString;
+            },
+            showClickResponse: function (event, data, element) {
+                console.log("gd-list: Show Click", data, element.identifier);
             },
             extractBand: function (title) {
                 var band = title;
@@ -89,15 +81,6 @@
                 }
                 return venue;
             },
-            
-            ready: function () {
-                var url = 'https://archive.org/advancedsearch.php?q=collection%3A(GratefulDead%20AND%20etree%20)%20AND%20-collection%3Astream_only&fl%5B%5D=identifier%2Cdate%2Cdescription%2Ctitle&sort%5B%5D=date%20asc&rows=100&page=0&output=json&callback=callbackList';
-                
-                var script = document.createElement('script');
-                script.src = url;
-                document.getElementsByTagName('head')[0].appendChild(script);
-                //this.$.ajax.go();
-            }
         });
     </script>
 </polymer-element>
