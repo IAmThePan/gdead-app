@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="md5.js"></script>
 
-<polymer-element name="ajax-jsonp" attributes="">
+<polymer-element name="ajax-jsonp" attributes="url identifier fn params auto">
     <template>
         <style>
         </style>
@@ -9,27 +10,40 @@
     
     <script>
         Polymer("ajax-jsonp", {
-            jsonpCallbacks: {counter: 0},
-
+            //Attribute Defaults
+            url: "",
+            identifier: "",
+            fn: function () {
+                console.log("Ajax JSONP default");
+            },
+            params: {},
+            auto: false,
+            
             //Functions
-            go: function (url, fn) {
-                //Create the unique callback function
-                var name = "fn" + jsonpCallbacks.counter++;
-
-                //Save the callback functions
-                jsonpCallbacks[name] = function () {
-                    //Upon Success, remove the callback
-                    delete jsonpCallbacks[name];
+            ready: function () {
+                window.callbackJsonP = window.callbackJsonP || {};
+                if (this.auto) this.go();
+            },
+            go: function () {
+                var key     = "key" + md5(this.identifier + Math.random()).toString(),
+                    script  = document.createElement("script"),
+                    params  = this.params;
+                    fn      = this.fn;
+                
+                window.callbackJsonP[key] = function () {
+                    var n, fnName;
+                    for (n in this) fnName = n;
                     
-                    //Now call the desired callback internally and pass parameters
-                    var args = Array.prototype.slice.call(arguments);
-                    args.unshift(id);
-                    fn.apply(this, args);
+                    fn(params);
+                    
+                    delete window.callbackJsonP[fnName];
+                    document.getElementById(fnName).remove();
                 }
                 
-                this.doJSONP(url, "jsonpCallbacks." + name);
+                script.id = key;
+                script.src = this.url + "&callback=callbackJsonP." + key;
+                document.getElementsByTagName("head")[0].appendChild(script);
             },
-            doJSONP: function () {},
         });
     </script>
 </polymer-element>
